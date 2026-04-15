@@ -1,0 +1,64 @@
+name: Playwright Nightly Tests
+
+on:
+  schedule:
+    # 01:00 WIB = 18:00 UTC hari sebelumnya
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Iteration ${{ matrix.iteration }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        iteration: [1, 2, 3, 4, 5]
+
+    env:
+      CI: true
+      PW_HEADLESS: 'true'
+      PW_ITERATION_START: ${{ matrix.iteration }}
+      PW_ITERATION_END: ${{ matrix.iteration }}
+      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
+      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright login suite
+        run: npm run test:login
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-iteration-${{ matrix.iteration }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-iteration-${{ matrix.iteration }}
+          path: test-results/
+          retention-days: 30
