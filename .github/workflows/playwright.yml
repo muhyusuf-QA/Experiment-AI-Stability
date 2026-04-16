@@ -7,20 +7,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Iteration ${{ matrix.iteration }}
+  iteration_1:
+    name: Iteration 1
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        iteration: [1, 2, 3, 4, 5]
 
     env:
       CI: true
       PW_HEADLESS: 'true'
-      PW_ITERATION_START: ${{ matrix.iteration }}
-      PW_ITERATION_END: ${{ matrix.iteration }}
+      PW_ITERATION_START: '1'
+      PW_ITERATION_END: '1'
       ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
       ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
 
@@ -51,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-iteration-${{ matrix.iteration }}
+          name: playwright-report-iteration-1
           path: playwright-report/
           retention-days: 30
 
@@ -59,6 +55,218 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results-iteration-${{ matrix.iteration }}
+          name: test-results-iteration-1
+          path: test-results/
+          retention-days: 30
+
+  iteration_2:
+    name: Iteration 2
+    needs: iteration_1
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      CI: true
+      PW_HEADLESS: 'true'
+      PW_ITERATION_START: '2'
+      PW_ITERATION_END: '2'
+      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
+      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright login suite
+        run: npm run test:login
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-iteration-2
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-iteration-2
+          path: test-results/
+          retention-days: 30
+
+  iteration_3:
+    name: Iteration 3
+    needs: iteration_2
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      CI: true
+      PW_HEADLESS: 'true'
+      PW_ITERATION_START: '3'
+      PW_ITERATION_END: '3'
+      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
+      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright login suite
+        run: npm run test:login
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-iteration-3
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-iteration-3
+          path: test-results/
+          retention-days: 30
+
+  iteration_4:
+    name: Iteration 4
+    needs: iteration_3
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      CI: true
+      PW_HEADLESS: 'true'
+      PW_ITERATION_START: '4'
+      PW_ITERATION_END: '4'
+      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
+      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright login suite
+        run: npm run test:login
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-iteration-4
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-iteration-4
+          path: test-results/
+          retention-days: 30
+
+  iteration_5:
+    name: Iteration 5
+    needs: iteration_4
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      CI: true
+      PW_HEADLESS: 'true'
+      PW_ITERATION_START: '5'
+      PW_ITERATION_END: '5'
+      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
+      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright login suite
+        run: npm run test:login
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-iteration-5
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results-iteration-5
           path: test-results/
           retention-days: 30
