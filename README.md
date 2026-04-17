@@ -21,6 +21,11 @@ Test login membutuhkan 2 environment variable:
 - `ASKLUMIA_EMAIL`
 - `ASKLUMIA_PASSWORD`
 
+Test prerelease membutuhkan 2 environment variable tambahan:
+
+- `ASKLUMIA_PRE_EMAIL`
+- `ASKLUMIA_PRE_PASSWORD`
+
 Opsional:
 
 - `PW_HEADLESS`
@@ -29,15 +34,38 @@ Opsional:
 - `PW_ITERATION_START`
   - default: `1`
 - `PW_ITERATION_END`
-  - default: `5`
+  - default: `1`
+
+Untuk lokal, repo ini juga mendukung file:
+
+- `.env.local`
+
+File ini di-ignore oleh Git, jadi aman untuk menyimpan credential lokal Anda.
 
 ## Menjalankan Lokal
 
-### PowerShell
+### Opsi 1: `.env.local` yang direkomendasikan
+
+1. Buka `.env.local`
+2. Isi:
+
+```dotenv
+ASKLUMIA_EMAIL=email-anda
+ASKLUMIA_PASSWORD=password-anda
+ASKLUMIA_PRE_EMAIL=email-prerelease-anda
+ASKLUMIA_PRE_PASSWORD=password-prerelease-anda
+PW_HEADLESS=true
+PW_ITERATION_START=1
+PW_ITERATION_END=1
+```
+
+### Opsi 2: PowerShell sementara
 
 ```powershell
 $env:ASKLUMIA_EMAIL="email-anda"
 $env:ASKLUMIA_PASSWORD="password-anda"
+$env:ASKLUMIA_PRE_EMAIL="email-prerelease-anda"
+$env:ASKLUMIA_PRE_PASSWORD="password-prerelease-anda"
 ```
 
 ### List test
@@ -52,6 +80,12 @@ npm run test:list
 npm run test:login
 ```
 
+### Jalankan suite login prerelease
+
+```bash
+npm run test:login:pre
+```
+
 ### Jalankan browser secara headful
 
 ```powershell
@@ -61,36 +95,37 @@ npm run test:login
 
 ### Jalankan iterasi tertentu saja
 
-Contoh hanya iterasi 3:
+Contoh hanya iterasi 1:
 
 ```powershell
-$env:PW_ITERATION_START="3"
-$env:PW_ITERATION_END="3"
+$env:PW_ITERATION_START="1"
+$env:PW_ITERATION_END="1"
 npm run test:login
 ```
 
 ## Iterasi Lokal vs CI
 
-- Lokal default menjalankan `5` iterasi penuh
-- CI GitHub Actions membagi `5` iterasi menjadi `5` job terpisah
-- Setiap job CI hanya menjalankan `1` iterasi dengan:
-  - `PW_ITERATION_START`
-  - `PW_ITERATION_END`
-
-Dengan cara ini, total coverage tetap `5` iterasi, tetapi runtime CI lebih realistis.
+- Lokal default menjalankan `1` iterasi penuh
+- CI GitHub Actions juga menjalankan `1` iterasi penuh
+- `PW_ITERATION_START` dan `PW_ITERATION_END` tetap tersedia jika Anda ingin override manual
 
 ## GitHub Actions
 
 Workflow tersedia di:
 
 - `.github/workflows/playwright.yml`
+- `.github/workflows/playwright-pre.yml`
 
 Trigger:
 
-- manual via `workflow_dispatch`
-- terjadwal setiap `1:00 WIB`
+- `playwright.yml`
+  - manual via `workflow_dispatch`
+- `playwright-pre.yml`
+  - manual via `workflow_dispatch`
 
 Secrets yang wajib diset di GitHub:
 
 - `ASKLUMIA_EMAIL`
 - `ASKLUMIA_PASSWORD`
+- `ASKLUMIA_PRE_EMAIL`
+- `ASKLUMIA_PRE_PASSWORD`

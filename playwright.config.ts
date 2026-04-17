@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { loadLocalEnv } from './load-local-env';
+
+loadLocalEnv();
 
 export default defineConfig({
   testDir: './tests',
@@ -8,9 +11,9 @@ export default defineConfig({
 
   use: {
     ignoreHTTPSErrors: true,
-    trace: 'on',
-    screenshot: 'on',
-    video: 'on',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     
     // --- JURUS PAMUNGKAS: PERSISTENT PROFILE ---
     // Ini akan membuat folder 'user_data' di root project kamu.

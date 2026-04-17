@@ -1,11 +1,11 @@
-name: Playwright Nightly Tests
+name: Playwright Prerelease Nightly Tests
 
 on:
   workflow_dispatch:
 
 jobs:
-  login_suite:
-    name: Login Suite
+  login_pre_suite:
+    name: Login Pre Suite
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
@@ -14,8 +14,8 @@ jobs:
       PW_HEADLESS: 'true'
       PW_ITERATION_START: '1'
       PW_ITERATION_END: '1'
-      ASKLUMIA_EMAIL: ${{ secrets.ASKLUMIA_EMAIL }}
-      ASKLUMIA_PASSWORD: ${{ secrets.ASKLUMIA_PASSWORD }}
+      ASKLUMIA_PRE_EMAIL: ${{ secrets.ASKLUMIA_PRE_EMAIL }}
+      ASKLUMIA_PRE_PASSWORD: ${{ secrets.ASKLUMIA_PRE_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +28,8 @@ jobs:
       - name: Validate required secrets
         shell: bash
         run: |
-          test -n "$ASKLUMIA_EMAIL" || { echo "Missing secret: ASKLUMIA_EMAIL"; exit 1; }
-          test -n "$ASKLUMIA_PASSWORD" || { echo "Missing secret: ASKLUMIA_PASSWORD"; exit 1; }
+          test -n "$ASKLUMIA_PRE_EMAIL" || { echo "Missing secret: ASKLUMIA_PRE_EMAIL"; exit 1; }
+          test -n "$ASKLUMIA_PRE_PASSWORD" || { echo "Missing secret: ASKLUMIA_PRE_PASSWORD"; exit 1; }
 
       - name: Install dependencies
         run: npm ci
@@ -37,14 +37,14 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright login suite
-        run: npm run test:login
+      - name: Run Playwright prerelease login suite
+        run: npm run test:login:pre
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-login
+          name: playwright-report-login-pre
           path: playwright-report/
           retention-days: 30
 
@@ -52,6 +52,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: test-results-login
+          name: test-results-login-pre
           path: test-results/
           retention-days: 30

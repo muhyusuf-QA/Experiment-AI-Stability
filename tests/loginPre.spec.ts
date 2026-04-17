@@ -30,7 +30,7 @@ const ITERATION_START = Number(process.env.PW_ITERATION_START ?? '1');
 const ITERATION_END = Number(process.env.PW_ITERATION_END ?? String(TOTAL_ITERATIONS));
 const ITERATION_COUNT = ITERATION_END - ITERATION_START + 1;
 const IS_HEADLESS = process.env.PW_HEADLESS !== 'false';
-const ASKLUMIA_ORIGIN = 'https://dev.asklumia.ai';
+const ASKLUMIA_ORIGIN = 'https://prerelease.asklumia.ai';
 const INITIAL_RESPONSE_TIMEOUT = 10 * 60 * 1000;
 const PROCEED_RESPONSE_TIMEOUT = 5 * 60 * 1000;
 const ROOM_STATUS_POLL_INTERVAL = 2000;
@@ -795,7 +795,7 @@ async function executeScenario(
   });
 }
 
-test('Access asklumia Scenario 1', async () => {
+test('Access asklumia prerelease Scenario 1', async () => {
   validateIterationRange();
   test.setTimeout(TOTAL_TEST_TIMEOUT);
 
@@ -804,9 +804,9 @@ test('Access asklumia Scenario 1', async () => {
     randomUploadDir: path.resolve(projectRoot, 'file upload', 'Random'),
     visinemaUploadDir: path.resolve(projectRoot, 'file upload', 'Visinema'),
   };
-  const userDataDir = path.resolve(projectRoot, 'user_data_asklumia');
-  const asklumiaEmail = getRequiredEnv('ASKLUMIA_EMAIL');
-  const asklumiaPassword = getRequiredEnv('ASKLUMIA_PASSWORD');
+  const userDataDir = path.resolve(projectRoot, 'user_data_asklumia_pre');
+  const asklumiaEmail = getRequiredEnv('ASKLUMIA_PRE_EMAIL');
+  const asklumiaPassword = getRequiredEnv('ASKLUMIA_PRE_PASSWORD');
 
   const context = await chromium.launchPersistentContext(userDataDir, {
     headless: IS_HEADLESS,

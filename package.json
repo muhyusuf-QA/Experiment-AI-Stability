@@ -6,7 +6,8 @@
   "scripts": {
     "test": "playwright test",
     "test:list": "playwright test --list",
-    "test:login": "playwright test login.spec.ts --project=chromium"
+    "test:login": "playwright test login.spec.ts --project=chromium",
+    "test:login:pre": "playwright test loginPre.spec.ts --project=chromium"
   },
   "keywords": [],
   "author": "",
